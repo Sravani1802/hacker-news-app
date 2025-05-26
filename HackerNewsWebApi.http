@@ -1,0 +1,6 @@
+@HackerNewsWebApi_HostAddress = http://localhost:5278
+
+GET {{HackerNewsWebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
