@@ -1,0 +1,75 @@
+<div class="searchBox">
+  <mat-form-field appearance="outline" style="width: 300px; height: 56px">
+    <mat-label>Search Stories</mat-label>
+    <input
+      matInput
+      placeholder="Enter Title"
+      [(ngModel)]="searchQuery"
+      (keyup.enter)="onSearch()"
+    />
+  </mat-form-field>
+
+  <button
+    mat-raised-button
+    color="primary"
+    style="height: 56px"
+    (click)="onSearch()"
+  >
+    Search
+  </button>
+</div>
+<div *ngIf="!isLoading()">
+<div class="mat-elevation-z8 storyTable" >
+  <table mat-table [dataSource]="displayedStories()" matSort>
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+      <td mat-cell *matCellDef="let story">{{ story.id }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+      <td mat-cell *matCellDef="let story">{{ story.title }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="url">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Link</th>
+      <td mat-cell *matCellDef="let story">
+        <a *ngIf="story.url" [href]="story.url" target="_blank">
+          {{ story.url }}
+        </a>
+        <span *ngIf="!story.url">
+          {{ "Url is not available" }}
+        </span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="time" >
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+      <td mat-cell *matCellDef="let story">
+        {{ story.time * 1000 | date : "short" }}
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let story; columns: displayedColumns"></tr>
+
+    <!-- Row shown when there is no matching data. -->
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">
+        No data matching the filter "{{ searchQuery() }}"
+      </td>
+    </tr>
+  </table>
+</div>
+<mat-paginator
+  [pageSizeOptions]="[5, 10, 20, 30]"
+  [length]="totalStories()"
+  [pageSize]="pageSize()"
+  [pageIndex]="currentPage() - 1"
+  (page)="onPageChange($event)"
+  aria-label="Select page of users"
+>
+</mat-paginator>
+</div>
+<div *ngIf="isLoading()" class="spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
